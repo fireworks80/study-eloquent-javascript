@@ -2,6 +2,20 @@
 // 1. 두개의  인수 start, end를 받고 start부터 end까지 모든 숫자를 포함하는 배열을 반환하는 range 함수 만들기
 // 2. 숫자 배열을 인수로 받고 배열에 있는 숫자의 합계를 반환하는 sum 함수
 
+const range = (() => {
+  const _range = (start, end, acc) =>
+    start <= end ? _range(start + 1, end, (acc += ',' + start)) : JSON.parse('[' + acc.substring(1) + ']');
+  return (start, end) => _range(start, end, '');
+})();
+
+const sum = (() => {
+  const _sum = (arr, idx, acc) => (idx > -1 ? _sum(arr, idx - 1, acc + arr[idx]) : acc);
+  return (arr) => _sum(arr, arr.length - 1, 0);
+})();
+
+console.log(range(1, 5));
+console.log(sum(range(1, 5)));
+
 // 보너스:
 // 1. 배열을 만들때 'step' 값을 받는다.
 // 2. step이 없으면 기존대로 동작 (1씩 증가) range(1, 10, 2) 호출시 [1,3,5,7,9] 반환
@@ -17,16 +31,16 @@
 // 연습문제 3:
 // 리스트 (배열과 혼동해서는 안 됨)
 // ex:
-const list = {
-  value: 1,
-  rest: {
-    value: 2,
-    rest: {
-      value: 3,
-      rest: null,
-    },
-  },
-};
+// const list = {
+//   value: 1,
+//   rest: {
+//     value: 2,
+//     rest: {
+//       value: 3,
+//       rest: null,
+//     },
+//   },
+// };
 // 1. [1,2,3]을 인수로 받아서 리스트 구조를 만드는 arrayToList 함수를 작성
 // 2. 그리고 리스트에서 배열을 생성하는 listToArray 함수를 작성
 // 3. 요소와 리스트를 인수로 받고 해당 리스트의 맨 앞에 요소를 추가해서 새로운 리스트를 만드는 prepend 헬퍼 함수, 리스트와 숫자를
