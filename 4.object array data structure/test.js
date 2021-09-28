@@ -1,11 +1,10 @@
 // 연습문제 1:
 // 1. 두개의  인수 start, end를 받고 start부터 end까지 모든 숫자를 포함하는 배열을 반환하는 range 함수 만들기
 // 2. 숫자 배열을 인수로 받고 배열에 있는 숫자의 합계를 반환하는 sum 함수
-
-const range = (() => {
-  const _range = (start, end, acc) =>
-    start <= end ? _range(start + 1, end, (acc += ',' + start)) : JSON.parse('[' + acc.substring(1) + ']');
-  return (start, end) => _range(start, end, '');
+const rangeForwards = (() => {
+  const _range = (start, end, step, acc) =>
+    start <= end ? _range(start + step, end, step, acc + ',' + start) : JSON.parse('[' + acc.substring(1) + ']');
+  return (start, end, step = 1) => _range(start, end, step, '');
 })();
 
 const sum = (() => {
@@ -13,13 +12,38 @@ const sum = (() => {
   return (arr) => _sum(arr, arr.length - 1, 0);
 })();
 
-console.log(range(1, 5));
-console.log(sum(range(1, 5)));
+// console.log(rangeForwards(1, 10, 2));
+// console.log(sum(range(1, 5)));
 
 // 보너스:
 // 1. 배열을 만들때 'step' 값을 받는다.
 // 2. step이 없으면 기존대로 동작 (1씩 증가) range(1, 10, 2) 호출시 [1,3,5,7,9] 반환
-// 3. range(5, 2, -1) => [5,4,3,2,]
+// 3. range(5, 2, -1) => [5,4,3,2]
+
+const rangeReverse = (() => {
+  const _rangeReverse = (start, end, step, acc) =>
+    start >= end ? _rangeReverse(start + step, end, step, acc + ',' + start) : '[' + acc + ']';
+  return (start, end, step = 1) => _rangeReverse(start, end, step, '');
+})();
+
+// console.log(rangeReverse(5, 2, -1));
+
+const range = (() => {
+  // 이 두 함수를 합칠 방법이 생각 나지 않는다.
+  const _rangeForward = (start, end, step, acc) =>
+    start <= end ? _rangeForward(start + step, end, step, acc + ',' + start) : JSON.parse('[' + acc.substring(1) + ']');
+  const _rangeReverse = (start, end, step, acc) =>
+    start >= end ? _rangeReverse(start + step, end, step, acc + ',' + start) : JSON.parse('[' + acc.substring(1) + ']');
+
+  return (start, end, step) => {
+    if ((start > end && step > 0) || (start < end && step < 0)) throw Error('Invalide step');
+    step = step ? step : !step && start > end ? -1 : 1;
+
+    return start < end ? _rangeForward(start, end, step, '') : _rangeReverse(start, end, step, '');
+  };
+})();
+
+// console.log(range(10, 1));
 
 // 연습문제 2:
 // 1. reverseArray 함수는 배열을 받아서 동일한 요소가 반대 순서로 존재하는 '새로운 배열'을 리턴한다.
@@ -27,6 +51,43 @@ console.log(sum(range(1, 5)));
 // 3. 둘 중 어느 함수도 표준 reverse 메서드를 사용하면 안된다.
 // 96쪽 '함수와 부수 효과' 절에 나오는 부수 효과와 순수 함수에 대한 내용을 떠올려 보면 이 둘 중에서 어떤 함수가 더 많은 상황에서 사용될 것 같은가?
 // 어느 쪽이 더 속도가 빠른가?
+
+const list = {
+  table: {
+    3: ([arr, acc, cnt]) => {
+      acc.push(arr[cnt]);
+      return acc;
+    },
+    2: ([arr, idx]) => {
+      const old = arr[idx];
+      arr[idx] = arr[arr.length - 1 - idx];
+      arr[arr.length - 1 - idx] = old;
+      return arr;
+    },
+  },
+  do(...rest) {
+    return this.table[rest.length]?.(rest);
+  },
+};
+
+// const reverseArray = (() => {
+//   const _recursive = (arr, cnt, acc) => (cnt > -1 ? _recursive(arr, cnt - 1, list.do(arr, acc, cnt)) : acc);
+//   return (arr) => _recursive(arr, arr.length - 1, []);
+// })();
+
+// console.log(reverseArray([1, 2, 3]));
+// console.log(reverseArray(['a', 'b', 'c']));
+
+let arrayValue = [1, 2, 3, 4, 5];
+
+const reverseArrayInPlace = ((arr) => {
+  const _reverseArrayInPlace = (arr, max, idx) =>
+    idx < max ? _reverseArrayInPlace(list.do(arr, idx), max, idx + 1) : arr;
+  return (arr) => _reverseArrayInPlace(arr, arr.length / 2, 0);
+})();
+
+// reverseArrayInPlace(arrayValue);
+// console.log(arrayValue);
 
 // 연습문제 3:
 // 리스트 (배열과 혼동해서는 안 됨)
@@ -46,6 +107,21 @@ console.log(sum(range(1, 5)));
 // 3. 요소와 리스트를 인수로 받고 해당 리스트의 맨 앞에 요소를 추가해서 새로운 리스트를 만드는 prepend 헬퍼 함수, 리스트와 숫자를
 //    인수로 받고 해당 리스트에 주어진 위치(첫 번째 요소를 잠조하는 0 포함)의 요소를 반환하거나 해당되는 요소가 없다면 undefined를 반환하는 nth 헬퍼 함수를 작성
 //  아직 작성해 보지 않았다면 nth 재귀 함수 버전도 작성
+
+// const data = {
+//   makeList(arr, idx, acc) {
+//     acc.
+//   }
+// };
+
+const arrayToList = (() => {
+  const _recursive = (arr, idx, acc) => (idx > -1 ? _recursive(arr, idx - 1, { value: arr[idx], rest: acc }) : acc);
+  return (arr) => _recursive(arr, arr.length - 1, null);
+})();
+
+// console.log(arrayToList([1, 2, 3]));
+
+// const listToArray = (() => {})();
 
 // 연습문제 4:
 // '==' 연산자는 아이덴티티로 객체를 비교 한다.
