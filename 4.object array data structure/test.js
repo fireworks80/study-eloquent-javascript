@@ -20,30 +20,27 @@ const sum = (() => {
 // 2. step이 없으면 기존대로 동작 (1씩 증가) range(1, 10, 2) 호출시 [1,3,5,7,9] 반환
 // 3. range(5, 2, -1) => [5,4,3,2]
 
-const rangeReverse = (() => {
-  const _rangeReverse = (start, end, step, acc) =>
-    start >= end ? _rangeReverse(start + step, end, step, acc + ',' + start) : '[' + acc + ']';
-  return (start, end, step = 1) => _rangeReverse(start, end, step, '');
-})();
-
-// console.log(rangeReverse(5, 2, -1));
+// console.log(reverse([1, 2, 3, 4, 5]));
 
 const range = (() => {
   // 이 두 함수를 합칠 방법이 생각 나지 않는다.
-  const _rangeForward = (start, end, step, acc) =>
-    start <= end ? _rangeForward(start + step, end, step, acc + ',' + start) : JSON.parse('[' + acc.substring(1) + ']');
-  const _rangeReverse = (start, end, step, acc) =>
-    start >= end ? _rangeReverse(start + step, end, step, acc + ',' + start) : JSON.parse('[' + acc.substring(1) + ']');
+  const _range = (start, end, step, acc) =>
+    start <= end ? _range(start + step, end, step, acc + ',' + start) : JSON.parse('[' + acc.substring(1) + ']');
+
+  const reverse = (() => {
+    const _reverse = (arr, acc) => (arr.length ? _reverse(arr, [...acc, arr.pop()]) : acc);
+    return (arr) => _reverse(arr, []);
+  })();
 
   return (start, end, step) => {
     if ((start > end && step > 0) || (start < end && step < 0)) throw Error('Invalide step');
-    step = step ? step : !step && start > end ? -1 : 1;
+    step = Math.abs(step);
 
-    return start < end ? _rangeForward(start, end, step, '') : _rangeReverse(start, end, step, '');
+    return start < end ? _range(start, end, step, '') : reverse(_range(end, start, step, ''));
   };
 })();
 
-// console.log(range(10, 1));
+console.log(range(1, 10, 2));
 
 // 연습문제 2:
 // 1. reverseArray 함수는 배열을 받아서 동일한 요소가 반대 순서로 존재하는 '새로운 배열'을 리턴한다.
