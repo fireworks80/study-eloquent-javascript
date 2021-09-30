@@ -1,11 +1,11 @@
 // 연습문제 1:
 // 1. 두개의  인수 start, end를 받고 start부터 end까지 모든 숫자를 포함하는 배열을 반환하는 range 함수 만들기
 // 2. 숫자 배열을 인수로 받고 배열에 있는 숫자의 합계를 반환하는 sum 함수
-const rangeForwards = (() => {
-  const _range = (start, end, step, acc) =>
-    start <= end ? _range(start + step, end, step, acc + ',' + start) : JSON.parse('[' + acc.substring(1) + ']');
-  return (start, end, step = 1) => _range(start, end, step, '');
-})();
+// const rangeForwards = (() => {
+//   const _range = (start, end, step, acc) =>
+//     start <= end ? _range(start + step, end, step, acc + ',' + start) : JSON.parse('[' + acc.substring(1) + ']');
+//   return (start, end, step = 1) => _range(start, end, step, '');
+// })();
 
 const sum = (() => {
   const _sum = (arr, idx, acc) => (idx > -1 ? _sum(arr, idx - 1, acc + arr[idx]) : acc);
@@ -23,7 +23,6 @@ const sum = (() => {
 // console.log(reverse([1, 2, 3, 4, 5]));
 
 const range = (() => {
-  // 이 두 함수를 합칠 방법이 생각 나지 않는다.
   const _range = (start, end, step, acc) =>
     start <= end ? _range(start + step, end, step, acc + ',' + start) : JSON.parse('[' + acc.substring(1) + ']');
 
@@ -67,10 +66,10 @@ const list = {
   },
 };
 
-// const reverseArray = (() => {
-//   const _recursive = (arr, cnt, acc) => (cnt > -1 ? _recursive(arr, cnt - 1, list.do(arr, acc, cnt)) : acc);
-//   return (arr) => _recursive(arr, arr.length - 1, []);
-// })();
+const reverseArray = (() => {
+  const _recursive = (arr, cnt, acc) => (cnt > -1 ? _recursive(arr, cnt - 1, list.do(arr, acc, cnt)) : acc);
+  return (arr) => _recursive(arr, arr.length - 1, []);
+})();
 
 // console.log(reverseArray([1, 2, 3]));
 // console.log(reverseArray(['a', 'b', 'c']));
@@ -105,20 +104,34 @@ const reverseArrayInPlace = ((arr) => {
 //    인수로 받고 해당 리스트에 주어진 위치(첫 번째 요소를 잠조하는 0 포함)의 요소를 반환하거나 해당되는 요소가 없다면 undefined를 반환하는 nth 헬퍼 함수를 작성
 //  아직 작성해 보지 않았다면 nth 재귀 함수 버전도 작성
 
-// const data = {
-//   makeList(arr, idx, acc) {
-//     acc.
-//   }
-// };
-
 const arrayToList = (() => {
   const _recursive = (arr, idx, acc) => (idx > -1 ? _recursive(arr, idx - 1, { value: arr[idx], rest: acc }) : acc);
   return (arr) => _recursive(arr, arr.length - 1, null);
 })();
 
-// console.log(arrayToList([1, 2, 3]));
+console.log(arrayToList([1, 2, 3]));
 
-// const listToArray = (() => {})();
+const listToArray = (() => {
+  const _listToArray = (list, acc) =>
+    list.rest ? _listToArray(list.rest, [...acc, list.value]) : [...acc, list.value];
+
+  return (calcList) => _listToArray(calcList, []);
+})();
+
+console.log(listToArray(arrayToList([10, 20])));
+
+const prepend = (el, list) => ({ value: el, rest: list });
+
+console.log(prepend(10, prepend(20, null)));
+
+const nth = (list, num) => {
+  if (!list) return undefined;
+  if (!num) return list.value;
+
+  return nth(list.rest, num - 1);
+};
+
+console.log(nth(arrayToList([10, 20, 30]), 0));
 
 // 연습문제 4:
 // '==' 연산자는 아이덴티티로 객체를 비교 한다.
