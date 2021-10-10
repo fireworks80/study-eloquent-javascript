@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    // const power = (base, exponent = 2) => {
+    //   let result = 1;
+    //   for (let count = 0; count < exponent; count++) {
+    //     result *= base;
+    //   }
+    //   return result;
+    // };
+
+    // console.log(power(4));
+    // console.log(power(2, 6));
+
+
+
+    // const power = (base, exponent = 2, acc = 1, count = 0) => count < exponent ? power(base, exponent, acc * base,
+    //   count + 1) : acc;
+
+    const power = (() => {
+      const _power = (base, exponent, acc, cnt) => {
+        exponent = exponent || 2;
+        return cnt < exponent ? _power(base, exponent, acc * base, cnt + 1) : acc;
+
+      };
+      return (base, exponent) => _power(base, exponent, 1, 0);
+    })();
+
+    console.log(power(4));
+    console.log(power(2, 6));
+  </script>
+</body>
+
+</html>

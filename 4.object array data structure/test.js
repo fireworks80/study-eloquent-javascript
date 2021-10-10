@@ -39,7 +39,7 @@ const range = (() => {
   };
 })();
 
-console.log(range(1, 10, 2));
+// console.log(range(1, 10, 2));
 
 // 연습문제 2:
 // 1. reverseArray 함수는 배열을 받아서 동일한 요소가 반대 순서로 존재하는 '새로운 배열'을 리턴한다.
@@ -109,7 +109,7 @@ const arrayToList = (() => {
   return (arr) => _recursive(arr, arr.length - 1, null);
 })();
 
-console.log(arrayToList([1, 2, 3]));
+// console.log(arrayToList([1, 2, 3]));
 
 const listToArray = (() => {
   const _listToArray = (list, acc) =>
@@ -118,11 +118,11 @@ const listToArray = (() => {
   return (calcList) => _listToArray(calcList, []);
 })();
 
-console.log(listToArray(arrayToList([10, 20])));
+// console.log(listToArray(arrayToList([10, 20])));
 
 const prepend = (el, list) => ({ value: el, rest: list });
 
-console.log(prepend(10, prepend(20, null)));
+// console.log(prepend(10, prepend(20, null)));
 
 const nth = (list, num) => {
   if (!list) return undefined;
@@ -131,7 +131,7 @@ const nth = (list, num) => {
   return nth(list.rest, num - 1);
 };
 
-console.log(nth(arrayToList([10, 20, 30]), 0));
+// console.log(nth(arrayToList([10, 20, 30]), 0));
 
 // 연습문제 4:
 // '==' 연산자는 아이덴티티로 객체를 비교 한다.
@@ -140,3 +140,26 @@ console.log(nth(arrayToList([10, 20, 30]), 0));
 // '==='연산자를 사용해 값을 직접 비교해야 하는지 또는 새당 속성을 비교해야 하는지 확인하기 위해 typeof 연산자를 사용할 수 있다.
 // 두 값이 모두 'object'가 나오면 깊은 비교를 해야 한다. 하지만 typeof null도 'object'가 나오는데 오래된 문제 때문에 어색한 예외 처리를 해야 한다.
 // Object.keys 함수는 객체의 속성을 비교하기 위해 객체 속성을 확인해야 할 때 사용 할 수 있다.
+
+const obj = { here: { is: 'an' }, object: 2 };
+
+const deepEqual = (a, b) => {
+  if (a === b) return true;
+
+  if (a === null || typeof a !== 'object' || b === null || typeof b !== 'object') return false;
+
+  const KeysA = Object.keys(a);
+  const KeysB = Object.keys(b);
+
+  if (KeysA.length !== KeysB.length) return false;
+
+  for (const key of KeysA) {
+    if (!KeysB.includes(key) || !deepEqual(a[key], b[key])) return false;
+  }
+
+  return true;
+};
+
+// console.log(deepEqual(obj, obj));
+console.log(deepEqual(obj, { here: 1, object: 2 }));
+// console.log(deepEqual(obj, { here: { is: 'an' }, object: 2 }));

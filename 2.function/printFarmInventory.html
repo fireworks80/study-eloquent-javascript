@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    function printFarmInventory(cows, chickens) {
+      let cowString = String(cows);
+
+      while (cowString.length < 3) {
+        cowString = '0' + cowString;
+      }
+
+      console.log(`${cowString} Cows`);
+
+      let chickenString = String(chickens);
+
+      while (chickenString.length < 3) {
+        chickenString = '0' + chickenString;
+      }
+
+      console.log(`${chickenString} Chickens`);
+    }
+
+    // printFarmInventory(7, 11);
+
+    function printZeroPaddingWithLabel(number, label) {
+      let numberString = String(number);
+
+      while (numberString.length < 3) {
+        numberString = '0' + numberString;
+      }
+
+      console.log(`${numberString} ${label}`);
+    }
+
+    function zeroPad(number, width) {
+      let string = String(number);
+
+      while (string.length < width) {
+        string = '0' + string;
+      }
+      return string;
+    }
+
+    function printFarmInventory(cows, chickens, pigs) {
+      // printZeroPaddingWithLabel(cows, 'Cows');
+      // printZeroPaddingWithLabel(chickens, 'Chickens');
+      // printZeroPaddingWithLabel(pigs, 'Pigs');
+
+      console.log(`${zeroPad(cows, 3)} Cows`);
+      console.log(`${zeroPad(chickens, 3)} Chickens`);
+      console.log(`${zeroPad(pigs, 3)} Pigs`);
+    }
+
+    // printFarmInventory(5, 12, 3);
+
+    // console.log(Math.min(3, 11));
+
+    const minFn = (a, b) => a < b ? a : b;
+
+    // console.log(minFn(11, 21));
+
+    const isEven = (num) => {
+      if (num < 0) return `${num} is not valide`;
+      return num % 2 === 1 ? false : num % 2 === 0 ? true : isEven(num - 2);
+    };
+    // console.log(isEven(75));
+
+    const find = {
+      char(string, char, acc) {
+        return string === char ? acc + 1 : acc;
+      },
+      charB(string, acc) {
+        return string === 'B' ? acc + 1 : acc;
+      }
+    };
+
+    const countBs = (() => {
+      const _countBs = (strings, cnt, acc) => cnt < strings.length ? _countBs(strings, cnt + 1, find.charB(strings[
+        cnt], acc)) : acc;
+      return (strings) => _countBs(strings, 0, 0);
+    })();
+
+    // console.log(countBs('BbbBbsefsbd'));
+
+    const countChar = (() => {
+      const _countChar = (string, char, cnt, acc) => cnt < string.length ? _countChar(string, char, cnt + 1, find
+        .char(string[cnt], char, acc)) : acc;
+
+      return (string, char) => _countChar(string, char, 0, 0);
+    })();
+
+    console.log(countChar('Bad', 'B'));
+  </script>
+
+</body>
+
+</html>
